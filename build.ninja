@@ -1,0 +1,46 @@
+target = riscv64-unknown-elf
+
+cc = clang
+cc.flags = -std=c2x --target=$target -mcmodel=medany $
+  -ffreestanding -nostdlib -nodefaultlibs -Wall -Wextra -g -O1 $
+  -fzero-initialized-in-bss
+
+as = clang
+as.flags = --target=$target -nostdlib -nodefaultlibs -Wall -Wextra -g
+
+ld = ld.lld
+ld.flags = -g
+
+rule cc
+  command = $cc -c $in -o $out ${cc.flags} -MD -MF $out.d
+  depfile = $out.d
+
+rule as
+  command = $cc -c $in -o $out ${as.flags}
+
+rule ld
+  command = $ld $in -o $out ${ld.flags} -T $ldscript
+
+
+# aock:
+build build/aock/entry.s.o: as src/aock/entry.s
+build build/aock/main.c.o: cc src/aock/main.c
+build build/aock/vm.c.o: cc src/aock/vm.c
+
+# mstdc:
+build build/mstdc/core.c.o: cc src/mstdc/core.c
+build build/mstdc/aock.c.o: cc src/mstdc/aock.c
+
+build build/kern.elf: ld $
+  build/aock/entry.s.o $
+  build/aock/main.c.o $
+  build/aock/vm.c.o $
+  build/mstdc/core.c.o $
+  build/mstdc/aock.c.o $
+  | linker.ld
+  ldscript = linker.ld
+
+default build/kern.elf
+
+
+# run 

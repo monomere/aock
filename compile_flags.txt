@@ -1,0 +1,5 @@
+-std=c2x
+-ffreestanding
+-nostdlib
+--target=riscv64-unknown-elf
+-Isrc
