@@ -2,9 +2,7 @@
 #define AOCK_RISCV_H_
 #include "mstdc.h"
 
-typedef u16 rv_hword;
-typedef u32 rv_word, rv_sword;
-typedef u64 rv_dword;
+typedef void* rv_physptr;
 
 typedef struct [[gnu::packed]] {
 	u64 valid     : 1;

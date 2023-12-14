@@ -5,11 +5,19 @@
 #include <limits.h>
 #include <stdarg.h>
 
-#define MSTDC_VERSION 2023'12'0003
+#define MSTDC_VERSION 2023'12'0007
 static_assert(MSTDC_VERSION < INT_MAX);
 
 [[noreturn]] void panic(const char *_Nonnull fmt, ...);
 [[noreturn]] void panic1(const char *_Nonnull msg);
+
+#define PANIC(FMT, ...) \
+	panic("{z}:{i32} in {z}\t" FMT, __FILE__, __LINE__, __func__ \
+		__VA_OPT__(,) __VA_ARGS__)
+
+#define LOG(FMT, ...) \
+	writefmt(fstderr, "{z}:{i32} in {z}\t" FMT, __FILE__, __LINE__, __func__ \
+		__VA_OPT__(,) __VA_ARGS__)
 
 typedef size_t usize;
 typedef ptrdiff_t isize;
@@ -24,6 +32,8 @@ typedef uint64_t u64;
 typedef int64_t i64;
 typedef uintmax_t umax;
 typedef intmax_t imax;
+typedef __uint128_t u128;
+typedef __int128_t i128;
 typedef float f32;
 typedef double f64;
 
@@ -105,5 +115,7 @@ static inline usize u8copy(u8 *_Nonnull dst, const u8s src) {
 	memcopy(dst, src.data, src.len);
 	return src.len;
 }
+
+#include "mstdc.riscv.h"
 
 #endif // MSTDC_H_

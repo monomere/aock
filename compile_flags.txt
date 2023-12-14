@@ -3,3 +3,5 @@
 -nostdlib
 --target=riscv64-unknown-elf
 -Isrc
+-Wall
+-Wextra

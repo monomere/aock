@@ -1,15 +1,18 @@
 target = riscv64-unknown-elf
+arch = rv64imzbb
+debug = -g
 
 cc = clang
-cc.flags = -std=c2x --target=$target -mcmodel=medany $
-  -ffreestanding -nostdlib -nodefaultlibs -Wall -Wextra -g -O1 $
-  -fzero-initialized-in-bss
+cc.flags = --target=$target -march=$arch -mcmodel=medany $debug $
+  -ffreestanding -nostdlib -nodefaultlibs -Wall -Wextra -O1 $
+  -fzero-initialized-in-bss -Isrc -std=c2x
 
 as = clang
-as.flags = --target=$target -nostdlib -nodefaultlibs -Wall -Wextra -g
+as.flags = --target=$target -march=$arch $debug $
+  -nostdlib -nodefaultlibs -Wall -Wextra $
 
 ld = ld.lld
-ld.flags = -g
+ld.flags = $debug
 
 rule cc
   command = $cc -c $in -o $out ${cc.flags} -MD -MF $out.d
@@ -26,6 +29,7 @@ rule ld
 build build/aock/entry.s.o: as src/aock/entry.s
 build build/aock/main.c.o: cc src/aock/main.c
 build build/aock/vm.c.o: cc src/aock/vm.c
+build build/aock/pm.c.o: cc src/aock/pm.c
 
 # mstdc:
 build build/mstdc/core.c.o: cc src/mstdc/core.c
@@ -35,12 +39,14 @@ build build/kern.elf: ld $
   build/aock/entry.s.o $
   build/aock/main.c.o $
   build/aock/vm.c.o $
+  build/aock/pm.c.o $
   build/mstdc/core.c.o $
   build/mstdc/aock.c.o $
-  | linker.ld
-  ldscript = linker.ld
+  | src/aock/linker.ld
+  ldscript = src/aock/linker.ld
 
 default build/kern.elf
+
 
 
 # run 
