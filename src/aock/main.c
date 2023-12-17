@@ -4,10 +4,12 @@
 void kernel_main(uint64_t hartid, uint64_t fdt) {
 	LOG("hartid: {u64}, fdt: {p}\n", hartid, fdt);
 
-	rv_physptr pages = aock_alloc_pages(8);
-	LOG("8 pages at {p}\n", pages);
+	extern rv_linksym __kernel_end;
+	LOG("kernel end: {p}\n", &__kernel_end);
 
-	PANIC("oh no!");
+	aock_pm_init(&__kernel_end);
+
+	PANIC("kernel stoped!");
 }
 
 

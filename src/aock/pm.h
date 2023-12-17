@@ -3,8 +3,8 @@
 #include "mstdc.h"
 #include "riscv.h"
 
-void aock_init(rv_physptr base);
-rv_physptr aock_alloc_pages(usize count);
-void aock_dealloc_pages(rv_physptr page);
+void aock_pm_init(rv_physptr base);
+rv_physptr aock_pm_alloc_page();
+void aock_pm_dealloc_page(rv_physptr page);
 
 #endif // AOCK_PM_H_

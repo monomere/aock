@@ -35,5 +35,7 @@ SECTIONS {
 		*(.debug_frame)
 		*(.note .note.*)
 	}
+
+	PROVIDE(__kernel_end = ALIGN(2M));
 }
 

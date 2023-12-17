@@ -78,11 +78,13 @@ usize cstrlen(const char *cstr) {
 	}
 
 write_iN_to_buf_fn_(isize)
+write_iN_to_buf_fn_(iptr)
 write_iN_to_buf_fn_(i64)
 write_iN_to_buf_fn_(i32)
 write_iN_to_buf_fn_(i16)
 write_iN_to_buf_fn_(i8)
 write_uN_to_buf_fn_(usize)
+write_uN_to_buf_fn_(uptr)
 write_uN_to_buf_fn_(u64)
 write_uN_to_buf_fn_(u32)
 write_uN_to_buf_fn_(u16)
@@ -353,16 +355,16 @@ void writefmtv(
 
 					switch (fmt.spec) {
 #define CASE(S, T) case S: len = write_##T##_to_buf_(va_arg(va, T), buf, fmt.intbase); break
-						CASE(SPEC_UPTR, usize); CASE(SPEC_IPTR, isize);
+						CASE(SPEC_UPTR, uptr); CASE(SPEC_IPTR, iptr);
 						CASE(SPEC_USZ, usize); CASE(SPEC_ISZ, isize);
-						CASE(SPEC_U32, usize); CASE(SPEC_I32, usize);
-						CASE(SPEC_U64, usize); CASE(SPEC_I64, usize);
-						CASE(SPEC_U16, usize); CASE(SPEC_I16, usize);
-						CASE(SPEC_U8, usize); CASE(SPEC_I8, usize);
+						CASE(SPEC_U32, u32); CASE(SPEC_I32, i32);
+						CASE(SPEC_U64, u64); CASE(SPEC_I64, i64);
+						CASE(SPEC_U16, u32); CASE(SPEC_I16, i32);
+						CASE(SPEC_U8, u32); CASE(SPEC_I8, i32);
 #undef CASE
 						case SPEC_P: {
 							writeu8s(fout, u8s_c("0x"));
-							len = write_u32_to_buf_((uptr)va_arg(va, void*), buf + 2, 16);
+							len = write_uptr_to_buf_((uptr)va_arg(va, uptr), buf, 16);
 							fmt.fill = '0';
 							fmt.align = ALIGN_RIGHT;
 							fmt.width = sizeof(uptr) * 2;

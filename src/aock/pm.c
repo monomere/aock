@@ -1,7 +1,8 @@
 #include "pm.h"
 
 enum {
-	bitmap_count_ = 256
+	bitmap_count_ = 256,
+	alloc_count_ = 64,
 };
 
 [[gnu::aligned(16)]]
@@ -10,12 +11,13 @@ static u64 page_bitmaps_[bitmap_count_];
 static usize next_check_index_ = 0;
 static rv_physptr page_base_ = 0;
 
-static usize find_next_free_(usize count) {
+static usize find_next_free_() {
 	for (usize i = next_check_index_; i < bitmap_count_; ++i) {
-		if (cpopu64(~page_bitmaps_[i]) < count) continue;
-		usize t1s = ctzu64(~page_bitmaps_[i]);
-		page_bitmaps_[i] |= ((~(u64)0) >> (64 - count)) << t1s;
-		return i * 64 + t1s;
+		if (~page_bitmaps_[i] != 0) {
+			usize t1s = ctzu64(~page_bitmaps_[i]);
+			page_bitmaps_[i] |= (u64)1 << t1s;
+			return i * 64 + t1s;
+		}
 	}
 
 	if (next_check_index_ > 0) {
@@ -23,21 +25,23 @@ static usize find_next_free_(usize count) {
 			"retrying find_next_free_ with zero next_check_index_ (old={usz})\n",
 			next_check_index_
 		);
-		return find_next_free_(count);
+		return find_next_free_();
 	} else {
-		PANIC("out of memory, could not find {usz} pages!", count);
+		PANIC("out of memory, could not find a free page!");
 	}
 }
 
-rv_physptr aock_alloc_pages(usize count) {
-	usize next_free = find_next_free_(count);
-	return page_base_ + 4096 * next_free;
+rv_physptr aock_pm_alloc_page() {
+	usize next_free = find_next_free_();
+	return page_base_ + 0x1000 * next_free;
 }
 
-void aock_dealloc_pages(rv_physptr page) {
-	// next_check_index_ = 
+void aock_pm_dealloc_page(rv_physptr page) {
+	usize p = (page - page_base_) / 0x1000;
+	usize i = p / 64;
+	page_bitmaps_[i] &= ~(1 << (p - i * 64));
 }
 
-void aock_init(rv_physptr base) {
+void aock_pm_init(rv_physptr base) {
 	page_base_ = base;
 }

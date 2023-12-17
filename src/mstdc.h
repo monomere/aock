@@ -5,7 +5,7 @@
 #include <limits.h>
 #include <stdarg.h>
 
-#define MSTDC_VERSION 2023'12'0007
+#define MSTDC_VERSION 2023'12'0017
 static_assert(MSTDC_VERSION < INT_MAX);
 
 [[noreturn]] void panic(const char *_Nonnull fmt, ...);

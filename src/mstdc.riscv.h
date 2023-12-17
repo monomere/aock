@@ -6,8 +6,9 @@
 typedef u16 rv_hword;
 typedef u32 rv_word, rv_sword;
 typedef u64 rv_dword;
+typedef void rv_linksym;
 
-#define MSTDC_RISCV_VERSION 2023'12'0007
+#define MSTDC_RISCV_VERSION 2023'12'0017
 static_assert(MSTDC_RISCV_VERSION < INT_MAX);
 
 static inline rv_dword rv_clz_dword(rv_dword x) {
