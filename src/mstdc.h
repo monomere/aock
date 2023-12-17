@@ -110,11 +110,22 @@ void *_Nonnull memalloc(usize size);
 void *_Nonnull memrealloc(void *_Nonnull ptr, usize newsize);
 void memdealloc(void *_Nonnull ptr);
 
-void memcopy(void *_Nonnull dst, const void *_Nonnull src, usize size);
-static inline usize u8copy(u8 *_Nonnull dst, const u8s src) {
-	memcopy(dst, src.data, src.len);
-	return src.len;
-}
+#define inline_memcopy __builtin_memcpy_inline
+#define inline_memset __builtin_memset_inline
+#define inline_memzero(dst, size) __builtin_memset_inline(dst, 0, size)
+
+// static inline usize u8scopy(u8 *_Nonnull dst, const u8s src) {
+// 	memcopy(dst, src.data, src.len);
+// 	return src.len;
+// }
+
+// static inline void u8sset(const u8s dst, u8 byte) {
+// 	memset(dst.data, byte, dst.len);
+// }
+
+// static inline void u8szero(const u8s dst) {
+// 	memzero(dst.data, dst.len);
+// }
 
 #include "mstdc.riscv.h"
 

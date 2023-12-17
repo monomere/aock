@@ -5,6 +5,7 @@ ENTRY(kernel_entry);
 SECTIONS {
 	/* Include entry point at start of binary */
 	.text : ALIGN(4K) {
+		PROVIDE(__kernel_start = .);
 		*(.init);
 		*(.text);
 	}

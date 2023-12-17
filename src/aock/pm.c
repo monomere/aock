@@ -11,7 +11,7 @@ static u64 page_bitmaps_[bitmap_count_];
 static usize next_check_index_ = 0;
 static rv_physptr page_base_ = 0;
 
-static usize find_next_free_() {
+static usize alloc_bit_() {
 	for (usize i = next_check_index_; i < bitmap_count_; ++i) {
 		if (~page_bitmaps_[i] != 0) {
 			usize t1s = ctzu64(~page_bitmaps_[i]);
@@ -25,19 +25,19 @@ static usize find_next_free_() {
 			"retrying find_next_free_ with zero next_check_index_ (old={usz})\n",
 			next_check_index_
 		);
-		return find_next_free_();
+		return alloc_bit_();
 	} else {
 		PANIC("out of memory, could not find a free page!");
 	}
 }
 
 rv_physptr aock_pm_alloc_page() {
-	usize next_free = find_next_free_();
-	return page_base_ + 0x1000 * next_free;
+	usize next_free = alloc_bit_();
+	return page_base_ + RV_PAGESIZE * next_free;
 }
 
 void aock_pm_dealloc_page(rv_physptr page) {
-	usize p = (page - page_base_) / 0x1000;
+	usize p = (page - page_base_) / RV_PAGESIZE;
 	usize i = p / 64;
 	page_bitmaps_[i] &= ~(1 << (p - i * 64));
 }

@@ -30,7 +30,7 @@ typedef enum { //                 XWR
 } rv_pte_perm;
 
 #define RV_SATP_SV39 (8L << 60)
-#define RV_MAKE_SATP(PT) (SATP_SV39 | ((u64)(PT) >> 12))
+#define RV_MAKE_SATP(PT) (RV_SATP_SV39 | ((u64)(PT) >> 12))
 
 static inline void rv_write_satp(rv_dword v) {
 	__asm__ volatile ("csrw satp, %0" : : "r" (v));
@@ -42,5 +42,7 @@ static inline rv_dword rv_read_satp() {
 	return v;
 }
 
+#define RV_PAGESIZE 0x1000
+#define RV_PAGE_ROUNDDOWN(A) ((typeof(A))((uptr)(A) & ~(RV_PAGESIZE - 1)))
 
 #endif // AOCK_RISCV_H_
