@@ -6,11 +6,14 @@ SECTIONS {
 	/* Include entry point at start of binary */
 	.text : ALIGN(4K) {
 		PROVIDE(__kernel_start = .);
+		PROVIDE(__text_start = .);
 		*(.init);
 		*(.text);
+		PROVIDE(__text_end = .);
 	}
 
 	.bss : ALIGN(4K) {
+		PROVIDE(__data_start = .);
 		PROVIDE(__bss_start = .);
 		*(.bss .bss.*);
 		*(.sbss .sbss.*);
@@ -20,15 +23,16 @@ SECTIONS {
 		PROVIDE(__global_pointer$ = .);
 		PROVIDE(__bss_end = .);
 	}
-	
-	.rodata : ALIGN(4K) {
-		*(.rodata .rodata.*);
-		*(.srodata .srodata.*);
-	}
 
 	.data : ALIGN(4K) {
 		*(.data .data.*);
 		*(.sdata .sdata.*);
+	}
+	
+	.rodata : ALIGN(4K) {
+		*(.rodata .rodata.*);
+		*(.srodata .srodata.*);
+		PROVIDE(__data_end = .);
 	}
 
 	/DISCARD/ : {

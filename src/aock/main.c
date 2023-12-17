@@ -10,7 +10,6 @@ void kernel_main(uint64_t hartid, uint64_t fdt) {
 
 	aock_pm_init(&__kernel_end);
 	rv_pte *vmtab = aock_vm_init();
-	rv_write_satp(RV_MAKE_SATP(vmtab));
 	LOG("initialized vm\n");
 
 	u8 *page = aock_pm_alloc_page();
