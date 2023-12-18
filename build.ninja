@@ -27,8 +27,8 @@ rule ld
 
 
 # aock:
-build build/aock/entry.s.o: as src/aock/entry.s
 build build/aock/main.c.o: cc src/aock/main.c
+build build/aock/arch/$A/entry.s.o: as src/aock/arch/$A/entry.s
 build build/aock/arch/$A/vm.c.o: cc src/aock/arch/$A/vm.c
 build build/aock/arch/$A/pm.c.o: cc src/aock/arch/$A/pm.c
 build build/aock/arch/$A/trap.c.o: cc src/aock/arch/$A/trap.c
@@ -40,7 +40,7 @@ build build/mstdc/core.c.o: cc src/mstdc/core.c
 build build/aock/arch/$A/mstdc.c.o: cc src/aock/arch/$A/mstdc.c
 
 build build/kern.elf: ld $
-  build/aock/entry.s.o $
+  build/aock/arch/$A/entry.s.o $
   build/aock/main.c.o $
   build/aock/arch/$A/vm.c.o $
   build/aock/arch/$A/pm.c.o $
@@ -49,8 +49,8 @@ build build/kern.elf: ld $
   build/aock/arch/$A/ktvec.s.o $
   build/aock/arch/$A/mstdc.c.o $
   build/mstdc/core.c.o $
-  | src/aock/linker.ld
-  ldscript = src/aock/linker.ld
+  | src/aock/arch/$A/linker.ld
+  ldscript = src/aock/arch/$A/linker.ld
 
 default build/kern.elf
 

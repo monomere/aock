@@ -53,6 +53,12 @@ RV_DEF_CSR_ACCESS(scause);
 RV_DEF_CSR_ACCESS(sip);
 RV_DEF_CSR_ACCESS(stval);
 
+static inline rv_dword rv_get_hartid() {
+	rv_dword v;
+	__asm__ volatile ("mv %0, tp" : "=r" (v));
+	return v;
+}
+
 #define RV_SSTATUS_SPP (1L << 8) /** previous mode, 1 - supervisor, 0 - user */
 #define RV_SSTATUS_SPIE (1L << 5) /** supervisor previous interrupt enable */
 #define RV_SSTATUS_UPIE (1L << 4) /** user previous interrupt enable */
@@ -62,6 +68,8 @@ RV_DEF_CSR_ACCESS(stval);
 static inline void rv_sfence_vma() {
 	__asm__ volatile ("sfence.vma zero, zero");
 }
+
+
 
 #endif // AOCK_RV64_CORE_H_
 

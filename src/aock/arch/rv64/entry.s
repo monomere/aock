@@ -10,7 +10,7 @@ kernel_entry:
 .option norelax
 	la gp, __global_pointer$
 .option pop
-	
+
 	# clear the bss section:
 	la t1, __bss_start
 	la t2, __bss_end
@@ -22,6 +22,7 @@ kernel_entry:
 	# set the stack pointer
 	la sp, __stack_top
 
+	mv tp, a0
 	j kernel_main
 
 kernel_park:
