@@ -1,6 +1,7 @@
-#ifndef AOCK_RISCV_H_
-#define AOCK_RISCV_H_
+#ifndef AOCK_RV64_CORE_H_
+#define AOCK_RV64_CORE_H_
 #include "mstdc.h"
+#include "aock/arch/rv64/mem.h"
 
 typedef void* rv_physptr;
 
@@ -29,6 +30,8 @@ typedef enum { //                 XWR
 	RV_PTE_PERM_READ_WRITE_EXEC = 0b111,
 } rv_pte_perm;
 
+#define RV_UART0 ((volatile u8*)(uptr)0x10000000LL)
+
 #define RV_SATP_SV39 (8L << 60)
 #define RV_MAKE_SATP(PT) (RV_SATP_SV39 | ((u64)(PT) >> 12))
 
@@ -46,7 +49,5 @@ static inline void rv_sfence_vma() {
 	__asm__ volatile ("sfence.vma zero, zero");
 }
 
-#define RV_PAGESIZE 0x1000
-#define RV_PAGE_ROUNDDOWN(A) ((typeof(A))((uptr)(A) & ~(RV_PAGESIZE - 1)))
+#endif // AOCK_RV64_CORE_H_
 
-#endif // AOCK_RISCV_H_

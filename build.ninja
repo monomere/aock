@@ -1,3 +1,4 @@
+A = rv64
 target = riscv64-unknown-elf
 arch = rv64imzbb
 debug = -g
@@ -28,20 +29,20 @@ rule ld
 # aock:
 build build/aock/entry.s.o: as src/aock/entry.s
 build build/aock/main.c.o: cc src/aock/main.c
-build build/aock/vm.c.o: cc src/aock/vm.c
-build build/aock/pm.c.o: cc src/aock/pm.c
+build build/aock/arch/$A/vm.c.o: cc src/aock/arch/$A/vm.c
+build build/aock/arch/$A/pm.c.o: cc src/aock/arch/$A/pm.c
 
 # mstdc:
 build build/mstdc/core.c.o: cc src/mstdc/core.c
-build build/mstdc/aock.c.o: cc src/mstdc/aock.c
+build build/aock/arch/$A/mstdc.c.o: cc src/aock/arch/$A/mstdc.c
 
 build build/kern.elf: ld $
   build/aock/entry.s.o $
   build/aock/main.c.o $
-  build/aock/vm.c.o $
-  build/aock/pm.c.o $
+  build/aock/arch/$A/vm.c.o $
+  build/aock/arch/$A/pm.c.o $
+  build/aock/arch/$A/mstdc.c.o $
   build/mstdc/core.c.o $
-  build/mstdc/aock.c.o $
   | src/aock/linker.ld
   ldscript = src/aock/linker.ld
 

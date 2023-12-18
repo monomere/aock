@@ -1,17 +1,18 @@
 #include "mstdc.h"
+#include "aock/arch/rv64/core.h"
 
 filehandle fstderr = { .fd = 2 };
 filehandle fstdout = { .fd = 1 };
 filehandle fstdin = { .fd = 0 };
 
-static volatile u8 *uart = (u8*)0x10000000;
-
 void writeu8([[maybe_unused]] filehandle fout, u8 ch) {
-	*uart = ch;
+	*RV_UART0 = ch;
 }
 
 void writeu8s([[maybe_unused]] filehandle fout, u8s str) {
-	while (str.len --> 0) *uart = *(str.data++);
+	while (str.len --> 0) {
+		*RV_UART0 = *(str.data++);
+	}
 }
 
 [[noreturn]] void mstdc__panic_();

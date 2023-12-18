@@ -127,6 +127,6 @@ void memdealloc(void *_Nonnull ptr);
 // 	memzero(dst.data, dst.len);
 // }
 
-#include "mstdc.riscv.h"
+#include "mstdc/riscv.h"
 
 #endif // MSTDC_H_

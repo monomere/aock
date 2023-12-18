@@ -9,10 +9,10 @@ SECTIONS {
 		PROVIDE(__text_start = .);
 		*(.init);
 		*(.text);
-		PROVIDE(__text_end = .);
 	}
 
 	.bss : ALIGN(4K) {
+		PROVIDE(__text_end = .);
 		PROVIDE(__data_start = .);
 		PROVIDE(__bss_start = .);
 		*(.bss .bss.*);
@@ -32,7 +32,7 @@ SECTIONS {
 	.rodata : ALIGN(4K) {
 		*(.rodata .rodata.*);
 		*(.srodata .srodata.*);
-		PROVIDE(__data_end = .);
+		PROVIDE(__data_end = ALIGN(4K));
 	}
 
 	/DISCARD/ : {

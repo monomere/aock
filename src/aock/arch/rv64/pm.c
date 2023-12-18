@@ -1,4 +1,5 @@
-#include "pm.h"
+#include "aock/pm.h"
+#include "aock/arch/rv64/core.h"
 
 enum {
 	bitmap_count_ = 256,
@@ -31,17 +32,17 @@ static usize alloc_bit_() {
 	}
 }
 
-rv_physptr aock_pm_alloc_page() {
+phys_ptr pm_alloc_page() {
 	usize next_free = alloc_bit_();
 	return page_base_ + RV_PAGESIZE * next_free;
 }
 
-void aock_pm_dealloc_page(rv_physptr page) {
+void pm_dealloc_page(phys_ptr page) {
 	usize p = (page - page_base_) / RV_PAGESIZE;
 	usize i = p / 64;
 	page_bitmaps_[i] &= ~(1 << (p - i * 64));
 }
 
-void aock_pm_init(rv_physptr base) {
+void pm_init(phys_ptr base) {
 	page_base_ = base;
 }
