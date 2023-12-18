@@ -12,7 +12,7 @@ static_assert(MSTDC_VERSION < INT_MAX);
 [[noreturn]] void panic1(const char *_Nonnull msg);
 
 #define PANIC(FMT, ...) \
-	panic("{z}:{i32} in {z}\t" FMT, __FILE__, __LINE__, __func__ \
+	panic("{z}:{i32} in {z}\n" FMT, __FILE__, __LINE__, __func__ \
 		__VA_OPT__(,) __VA_ARGS__)
 
 #define LOG(FMT, ...) \

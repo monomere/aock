@@ -1,6 +1,7 @@
 #include "mstdc.h"
-#include "pm.h"
-#include "vm.h"
+#include "aock/pm.h"
+#include "aock/vm.h"
+#include "aock/trap.h"
 
 vm_pagetable create_kernel_pagetable() {
 	vm_pagetable tab = vm_alloc_pagetable();
@@ -58,7 +59,10 @@ void kernel_main(uint64_t hartid, uint64_t fdt) {
 	vm_use_pagetable(kptab);
 	LOG("initialized vm\n");
 
-	
+	trap_init();
+
+	u8 *p = (u8 *)0x0000000080412000;
+	*p = 4;
 
 	PANIC("kernel stopped!");
 }

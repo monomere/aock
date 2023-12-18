@@ -35,15 +35,29 @@ typedef enum { //                 XWR
 #define RV_SATP_SV39 (8L << 60)
 #define RV_MAKE_SATP(PT) (RV_SATP_SV39 | ((u64)(PT) >> 12))
 
-static inline void rv_write_satp(rv_dword v) {
-	__asm__ volatile ("csrw satp, %0" : : "r" (v));
-}
+#define RV_DEF_CSR_ACCESS(NAME) \
+	static inline void rv_write_##NAME(rv_dword v) { \
+		__asm__ volatile ("csrw " #NAME ", %0" : : "r" (v)); \
+	} \
+	static inline rv_dword rv_read_##NAME() { \
+		rv_dword v; \
+		__asm__ volatile ("csrr %0, " #NAME : "=r" (v)); \
+		return v; \
+	}
 
-static inline rv_dword rv_read_satp() {
-	rv_dword v;
-	__asm__ volatile ("csrr %0, satp" : "=r" (v));
-	return v;
-}
+RV_DEF_CSR_ACCESS(satp);
+RV_DEF_CSR_ACCESS(stvec);
+RV_DEF_CSR_ACCESS(sstatus);
+RV_DEF_CSR_ACCESS(sepc);
+RV_DEF_CSR_ACCESS(scause);
+RV_DEF_CSR_ACCESS(sip);
+RV_DEF_CSR_ACCESS(stval);
+
+#define RV_SSTATUS_SPP (1L << 8) /** previous mode, 1 - supervisor, 0 - user */
+#define RV_SSTATUS_SPIE (1L << 5) /** supervisor previous interrupt enable */
+#define RV_SSTATUS_UPIE (1L << 4) /** user previous interrupt enable */
+#define RV_SSTATUS_SIE (1L << 1) /** supervisor interrupt enable */
+#define RV_SSTATUS_UIE (1L << 0) /** user interrupt enable */
 
 static inline void rv_sfence_vma() {
 	__asm__ volatile ("sfence.vma zero, zero");
