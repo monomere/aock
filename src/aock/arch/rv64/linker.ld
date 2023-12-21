@@ -1,7 +1,7 @@
 ENTRY(kernel_entry);
- 
+
 . = 0x80200000;
- 
+
 SECTIONS {
 	/* Include entry point at start of binary */
 	.text : ALIGN(4K) {
@@ -9,6 +9,10 @@ SECTIONS {
 		PROVIDE(__text_start = .);
 		*(.init);
 		*(.text);
+		. = ALIGN(4K);
+		PROVIDE(__trampoline_start = .);
+		*(.trampoline);
+		ASSERT(. - __trampoline_start < 4K);
 	}
 
 	.bss : ALIGN(4K) {
@@ -28,7 +32,7 @@ SECTIONS {
 		*(.data .data.*);
 		*(.sdata .sdata.*);
 	}
-	
+
 	.rodata : ALIGN(4K) {
 		*(.rodata .rodata.*);
 		*(.srodata .srodata.*);

@@ -69,7 +69,9 @@ static inline void rv_sfence_vma() {
 	__asm__ volatile ("sfence.vma zero, zero");
 }
 
-
+typedef struct [[gnu::packed]] {
+	u64 gprs[32];
+} rv_trapframe;
 
 #endif // AOCK_RV64_CORE_H_
 

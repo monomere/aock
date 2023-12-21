@@ -10,11 +10,17 @@ void trap_init() {
 }
 
 static void init_kernel_() {
-	extern void rv_ktvec();
-	rv_write_stvec((uptr)&rv_ktvec);
+	extern void rv_kernel_vec();
+	rv_write_stvec((uptr)&rv_kernel_vec);
+	// extern void rv_user_vec();
+	// rv_write_stvec((uptr)&rv_user_vec);
 }
 
 static void init_user_() {
+	extern rv_linksym __trampoline_start;
+	extern void rv_kernel_vec();
+	extern void rv_user_vec();
+	extern void rv_user_ret(rv_pte *pte);
 
 }
 
@@ -68,12 +74,26 @@ static int get_trap_type_(rv_dword scause) {
 
 static const char *scause_to_str_(rv_dword scause) {
 	switch (scause) {
-		case 0xf: return "store page fault";
+		case 0: return "instruction address misaligned";
+		case 1: return "instruction access fault";
+		case 2: return "illegal instruction";
+		case 3: return "breakpoint";
+		case 4: return "load address misaligned";
+		case 5: return "load access fault";
+		case 6: return "store address misaligned";
+		case 7: return "store access fault";
+		case 8: return "env call from u-mode";
+		case 9: return "env call from s-mode";
+		case 12: return "instruction page fault";
+		case 13: return "load page fault";
+		case 15: return "store page fault";
 		default: return "unknown";
 	}
 }
 
-void rv_ktrap() {
+void rv_kernel_trap(rv_trapframe *frame) {
+	(void)frame;
+
 	rv_dword sepc = rv_read_sepc();
 	rv_dword sstatus = rv_read_sstatus();
 	rv_dword scause = rv_read_scause();
@@ -96,6 +116,4 @@ void rv_ktrap() {
 
 	// rv_write_sepc(sepc);
 	// rv_write_sstatus(sstatus);
-
-
 }
