@@ -1,5 +1,10 @@
 #ifndef MSTDC_H_
 #define MSTDC_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <limits.h>
@@ -128,5 +133,10 @@ void memdealloc(void *_Nonnull ptr);
 // }
 
 #include "mstdc/riscv.h"
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MSTDC_H_
