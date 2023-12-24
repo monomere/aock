@@ -1,0 +1,4 @@
+-stdlib=libc++
+-std=c++2b
+-Wall
+-Wextra
